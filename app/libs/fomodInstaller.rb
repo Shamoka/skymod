@@ -16,13 +16,8 @@ module Skymod
 			get_required_files
 			get_install_steps
 			@install_steps.each do |is|
-				puts 
-				puts 
-				puts 
-				is.debug
-				puts 
-				puts 
-				puts 
+				dialog = FomodInstallStepDialog.new(is)
+				dialog.run
 			end
 			return self
 		end
