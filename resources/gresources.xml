@@ -3,5 +3,7 @@
 	<gresource prefix="/org/shamoka/skymod/">
 		<file preprocess="xml-stripblanks">ui/ApplicationWindow.ui</file>
 		<file preprocess="xml-stripblanks">ui/ListBoxRow.ui</file>
+		<file preprocess="xml-stripblanks">ui/FomodInstallStepDialog.ui</file>
+		<file preprocess="xml-stripblanks">ui/FomodInstallStepDialogRow.ui</file>
 	</gresource>
 </gresources>
