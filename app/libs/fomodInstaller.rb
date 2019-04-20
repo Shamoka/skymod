@@ -15,6 +15,15 @@ module Skymod
 			get_module_name
 			get_required_files
 			get_install_steps
+			@install_steps.each do |is|
+				puts 
+				puts 
+				puts 
+				is.debug
+				puts 
+				puts 
+				puts 
+			end
 			return self
 		end
 

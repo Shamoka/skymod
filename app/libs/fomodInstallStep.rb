@@ -17,13 +17,26 @@ module Skymod
 				end
 			end
 
+			def debug
+				puts "InstallStep"
+				@optional_file_groups.each do |opt|
+					opt.debug
+				end
+			end
+
 			class Flag
 				attr_reader	:name
 				attr_reader :value
 
 				def initialize(xml)
 					@name = xml.attributes['name']
-					@value = xml.attributes['value']
+					@value = xml.attributes['value'] || xml.text
+				end
+
+				def debug
+					puts "-------- Flag"
+					puts "         name: " + @name
+					puts "         value: " + @value
 				end
 			end
 
@@ -37,6 +50,14 @@ module Skymod
 					@order = plugins.attributes['order']
 					plugins.each_element('plugin') do |plugin|
 						@plugins << Plugin.new(plugin)
+					end
+				end
+
+				def debug
+					puts "-- Group"
+					puts "   order: " + @order
+					plugins.each do |plugin|
+						plugin.debug
 					end
 				end
 			end
@@ -62,6 +83,17 @@ module Skymod
 						@files << File.new(file)
 					end
 				end
+
+				def debug
+					puts "------ Plugin"
+					puts "       name: " + @name
+					@flags.each do |flag|
+						flag.debug
+					end
+					@files.each do |file|
+						file.debug
+					end
+				end
 			end
 
 			class File
@@ -80,6 +112,14 @@ module Skymod
 					@source = xml.attributes['source']
 					@destination = xml.attributes['destination']
 					@priority = xml.attributes['priority']
+				end
+
+				def debug
+					puts "-------- File"
+					puts "         type: " + @type.to_s
+					puts "         source: " + @source
+					puts "         destination: " + @destination
+					puts "         priority: " + @priority
 				end
 			end
 		end
