@@ -12,13 +12,19 @@ module Skymod
 			@archive = Archive.new(app_root, filename)
 			@db = db
 			@gameId = db.execute("SELECT DISTINCT rowid FROM games WHERE name == (?)", game)
-			@installed = @db.execute("SELECT installed FROM mods where archive_name == (?) AND gameId == (?)", filename, @gameId) || "false";
+			@installed = @db.execute("SELECT installed FROM mods where archive_name == (?) AND gameId == (?)", filename, @gameId)
+			if @installed.empty?
+				@installed = "false"
+			else
+				@installed = @installed.first.first
+			end
 		end
 
 		def save!
 			name = File.basename(@archive.filename)
-			ret = @db.execute("INSERT INTO mods(archive_name, installed, gameId) VALUES (?, ?, ?)", name, @installed.to_s, @gameId)
+			@db.execute("INSERT INTO mods(archive_name, installed, gameId) VALUES (?, ?, ?)", name, @installed.to_s, @gameId)
 		end
+
 
 		def exists?
 			if @db.execute("SELECT * FROM mods WHERE archive_name == (?)", File.basename(@archive.filename)).empty?
