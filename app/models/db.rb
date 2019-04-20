@@ -28,14 +28,14 @@ module Skymod
 		end
 
 		def get_mod(name, gameId)
-			mod_info = @db.execute("SELECT * FROM mods WHERE archive_name == (?) AND gameId == (?)", name, gameId).first
+			mod_info = @db.execute("SELECT installed, rowid FROM mods WHERE archive_name == (?) AND gameId == (?)", name, gameId).first
 			if mod_info.empty?
 				return nil
 			end
-			game = @db.execute("SELECT name FROM games WHERE rowid == (?)", gameId)
-			mod = Mod.new(name, @db, @app_root, game)
-			mod.installed = mod_info[1]
-			mod.modId = mod_info[2]
+			mod = Mod.new(name, @db, @app_root, gameId)
+			puts mod_info
+			mod.installed = mod_info[0]
+			mod.modId = mod_info[1]
 			return mod
 		end
 
@@ -43,8 +43,9 @@ module Skymod
 
 		def check_archives(archive_dir)
 			game = File.basename(archive_dir)
+			gameId = @db.execute("SELECT DISTINCT rowid FROM games WHERE name == (?)", game).first.first
 			Dir.glob(File.join(archive_dir, "*.7z")).each do |archive_file|
-				mod = Mod.new(archive_file, @db, @app_root, game)
+				mod = Mod.new(archive_file, @db, @app_root, gameId)
 				if not mod.exists?
 					mod.save!
 					mod.extract!

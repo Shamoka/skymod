@@ -9,10 +9,10 @@ module Skymod
 		attr_accessor :installed
 		attr_accessor :modId
 
-		def initialize(filename, db, app_root, game)
+		def initialize(filename, db, app_root, gameId)
 			@archive = Archive.new(app_root, filename)
 			@db = db
-			@gameId = db.execute("SELECT DISTINCT rowid FROM games WHERE name == (?)", game).first.first
+			@gameId = gameId
 			@installed = "false"
 		end
 
