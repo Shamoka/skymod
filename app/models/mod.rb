@@ -7,27 +7,22 @@ module Skymod
 	class Mod
 		attr_accessor :archive
 		attr_accessor :installed
+		attr_accessor :modId
 
 		def initialize(filename, db, app_root, game)
 			@archive = Archive.new(app_root, filename)
 			@db = db
-			@gameId = db.execute("SELECT DISTINCT rowid FROM games WHERE name == (?)", game)
-			@installed = @db.execute("SELECT installed FROM mods where archive_name == (?) AND gameId == (?)", filename, @gameId)
-			if @installed.empty?
-				@installed = "false"
-			else
-				@installed = @installed.first.first
-			end
+			@gameId = db.execute("SELECT DISTINCT rowid FROM games WHERE name == (?)", game).first.first
+			@installed = "false"
 		end
 
 		def save!
 			name = File.basename(@archive.filename)
-			@db.execute("INSERT INTO mods(archive_name, installed, gameId) VALUES (?, ?, ?)", name, @installed.to_s, @gameId)
+			@db.execute("INSERT INTO mods(archive_name, installed, gameId) VALUES (?, ?, ?)", name, @installed, @gameId)
 		end
 
 		def update_installed!
-			mod_id = @db.execute("SELECT rowid from mods WHERE archive_name == (?) AND gameId == (?)", File.basename(@archive.filename), @gameId).first.first
-			@db.execute("UPDATE mods SET installed = (?) WHERE rowid == (?)", @installed, mod_id)
+			@db.execute("UPDATE mods SET installed = (?) WHERE rowid == (?)", @installed, @modId)
 		end
 
 		def exists?

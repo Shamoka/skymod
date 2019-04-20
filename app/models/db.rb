@@ -28,12 +28,15 @@ module Skymod
 		end
 
 		def get_mod(name, gameId)
-			mod_info = @db.execute("SELECT * FROM mods WHERE archive_name == (?) AND gameId == (?)", name, gameId)
+			mod_info = @db.execute("SELECT * FROM mods WHERE archive_name == (?) AND gameId == (?)", name, gameId).first
 			if mod_info.empty?
 				return nil
 			end
 			game = @db.execute("SELECT name FROM games WHERE rowid == (?)", gameId)
-			return Mod.new(name, @db, @app_root, game)
+			mod = Mod.new(name, @db, @app_root, game)
+			mod.installed = mod_info[1]
+			mod.modId = mod_info[2]
+			return mod
 		end
 
 		private
