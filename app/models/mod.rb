@@ -25,6 +25,10 @@ module Skymod
 			@db.execute("INSERT INTO mods(archive_name, installed, gameId) VALUES (?, ?, ?)", name, @installed.to_s, @gameId)
 		end
 
+		def update_installed!
+			mod_id = @db.execute("SELECT rowid from mods WHERE archive_name == (?) AND gameId == (?)", File.basename(@archive.filename), @gameId).first.first
+			@db.execute("UPDATE mods SET installed = (?) WHERE rowid == (?)", @installed, mod_id)
+		end
 
 		def exists?
 			if @db.execute("SELECT * FROM mods WHERE archive_name == (?)", File.basename(@archive.filename)).empty?
@@ -41,7 +45,7 @@ module Skymod
 		end
 
 		def install!
-			return if @installed == "false"
+			return if @installed == "true"
 			game_dir = @db.execute("SELECT path FROM games WHERE rowid == (?)", @gameId).first.first
 			fomod_dir = Skymod::Dir.no_case_find(@archive.base_extract_dir, "fomod")
 			if fomod_dir
@@ -54,9 +58,11 @@ module Skymod
 
 			installer.prepare.run
 			@installed = "true"
+			self.update_installed!
 		end
 
 		def uninstall!
+			return if @installed == "false"
 			raise ModNotFoundException if @modId.nil? 
 			data_dir = Skymod::Dir.no_case_find(game_dir, "Data")
 			files = @db.execute("SELECT path FROM mod_files WHERE modId == (?)", @modId)
