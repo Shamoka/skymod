@@ -8,23 +8,22 @@ module Skymod
 		attr_accessor :archive
 		attr_accessor :installed
 
-		def initialize(filename, db, app_root)
+		def initialize(filename, db, app_root, gameId)
 			@archive = Archive.new(app_root, filename)
-			@installed = false
 			@db = db
-			@modId = @db.execute("SELECT DISTINCT rowid FROM mods WHERE archive_name == (?)", File.basename(@archive.filename))
-			@modId = @modId.first
+			@installed = false
+			@gameId = gameId
 		end
 
 		def save!
 			name = File.basename(@archive.filename)
-			ret = @db.execute("INSERT INTO mods(archive_name, installed) VALUES (?, ?)", name,  @installed.to_s)
-			@modId = @db.execute("SELECT DISTINCT rowid FROM mods WHERE archive_name == (?)", name).first.first
-			raise ModNotFoundException if @modId.nil?
+			ret = @db.execute("INSERT INTO mods(archive_name, installed, gameId) VALUES (?, 'false', ?)", name, @gameId)
 		end
 
 		def exists?
 			if @db.execute("SELECT * FROM mods WHERE archive_name == (?)", File.basename(@archive.filename)).empty?
+				return false
+			elsif @db.execute("SELECT * FROM games WHERE rowid == (?)", @gameId)
 				return false
 			else
 				return true
@@ -35,7 +34,11 @@ module Skymod
 			@archive.extract
 		end
 
-		def install!(game_dir)
+		def install!
+			mod_sql = @db.execute("SELECT * FROM mods WHERE archive_name == (?)", File.basename(@archive.filename))
+			if mod_sql[1] = "True"
+				return ;
+			end
 			fomod_dir = Skymod::Dir.no_case_find(@archive.base_extract_dir, "fomod")
 			if fomod_dir
 				module_config_xml_path = Skymod::Dir.no_case_find(fomod_dir, "ModuleConfig.xml")
@@ -48,7 +51,7 @@ module Skymod
 			installer.prepare.run
 		end
 
-		def uninstall!(game_dir)
+		def uninstall!
 			raise ModNotFoundException if @modId.nil? 
 			data_dir = Skymod::Dir.no_case_find(game_dir, "Data")
 			files = @db.execute("SELECT path FROM mod_files WHERE modId == (?)", @modId)

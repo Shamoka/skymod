@@ -7,7 +7,7 @@ module Skymod
 		def initialize(app_root)
 			super 'org.shamoka.skymod', Gio::ApplicationFlags::FLAGS_NONE
 
-			@db = Skymod::DB.new(app_root, "./tmp")
+			@db = Skymod::DB.new(app_root)
 
 			signal_connect :activate do |application|
 				window = Skymod::ApplicationWindow.new(application)

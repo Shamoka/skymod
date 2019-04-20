@@ -18,6 +18,7 @@ module Skymod
 			modListBoxRowInfo.buffer.text = "installed: " + item[1]
 
 			modListBoxInstallButton.signal_connect :clicked do |widget|
+
 			end
 		end
 	end
