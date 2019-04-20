@@ -18,6 +18,7 @@ module Skymod
 			@install_steps.each do |is|
 				dialog = FomodInstallStepDialog.new(is)
 				dialog.run
+				dialog.destroy
 			end
 			return self
 		end
