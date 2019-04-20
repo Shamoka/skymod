@@ -13,12 +13,14 @@
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="spacing">5</property>
         <property name="homogeneous">True</property>
         <child>
           <object class="GtkTextView" id="modListBoxRowText">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="editable">False</property>
+            <property name="wrap_mode">char</property>
             <property name="cursor_visible">False</property>
             <property name="buffer">textbuffer2</property>
             <property name="input_purpose">alpha</property>
@@ -34,6 +36,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="editable">False</property>
+            <property name="wrap_mode">char</property>
             <property name="cursor_visible">False</property>
             <property name="buffer">textbuffer1</property>
           </object>
