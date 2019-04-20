@@ -1,0 +1,17 @@
+module Skymod
+	class DirectInstaller < Installer
+		def initialize(game_dir, root, db, modId)
+			super game_dir, root, db, modId
+			@data_dir = Skymod::Dir.no_case_find(@root, "data") || @root
+		end
+
+		def prepare
+			add_files_to_list(@data_dir, @data_dir)
+			return self
+		end
+
+		def run
+			copy_files(@data_dir)
+		end
+	end
+end
