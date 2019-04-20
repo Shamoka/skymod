@@ -12,10 +12,10 @@ module Skymod
 				@db.execute("CREATE TABLE mods(
 							archive_name VARCHAR(1024) NOT NULL,
 							installed BOOL,
-						    gameId INT(64),
-						   	FOREIGN KEY(gameId) REFERENCES games(rowid))")
+							gameId INT(64),
+							FOREIGN KEY(gameId) REFERENCES games(rowid))")
 				@db.execute("CREATE TABLE mod_files(
-							modId INT(64),
+					modId INT(64),
 							path VARCHAR(2048),
 							FOREIGN KEY(modId) REFERENCES mods(rowid))")
 				@db.execute("INSERT INTO games(name, path) VALUES('test', './tmp')")
@@ -25,6 +25,15 @@ module Skymod
 
 		def execute(cmd)
 			@db.execute(cmd)
+		end
+
+		def get_mod(name, gameId)
+			mod_info = @db.execute("SELECT * FROM mods WHERE archive_name == (?) AND gameId == (?)", name, gameId)
+			if mod_info.empty?
+				return nil
+			end
+			game = @db.execute("SELECT name FROM games WHERE rowid == (?)", gameId)
+			return Mod.new(name, @db, @app_root, game)
 		end
 
 		private

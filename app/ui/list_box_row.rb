@@ -18,8 +18,17 @@ module Skymod
 			modListBoxRowInfo.buffer.text = "installed: " + item[1]
 
 			modListBoxInstallButton.signal_connect :clicked do |widget|
-
+				mod = application.db.get_mod(item[0], item[2])
+				mod.install!
 			end
+		end
+
+		private
+
+		def application
+			parent = self.parent
+			parent = parent.parent while not parent.is_a?(Gtk::Window)
+			parent.application
 		end
 	end
 end

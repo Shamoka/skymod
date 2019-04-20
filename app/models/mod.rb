@@ -8,22 +8,22 @@ module Skymod
 		attr_accessor :archive
 		attr_accessor :installed
 
-		def initialize(filename, db, app_root, gameId)
+		def initialize(filename, db, app_root, game)
 			@archive = Archive.new(app_root, filename)
 			@db = db
-			@installed = false
-			@gameId = gameId
+			@gameId = db.execute("SELECT DISTINCT rowid FROM games WHERE name == (?)", game)
+			@installed = @db.execute("SELECT installed FROM mods where archive_name == (?) AND gameId == (?)", filename, @gameId) || "false";
 		end
 
 		def save!
 			name = File.basename(@archive.filename)
-			ret = @db.execute("INSERT INTO mods(archive_name, installed, gameId) VALUES (?, 'false', ?)", name, @gameId)
+			ret = @db.execute("INSERT INTO mods(archive_name, installed, gameId) VALUES (?, ?, ?)", name, @installed.to_s, @gameId)
 		end
 
 		def exists?
 			if @db.execute("SELECT * FROM mods WHERE archive_name == (?)", File.basename(@archive.filename)).empty?
 				return false
-			elsif @db.execute("SELECT * FROM games WHERE rowid == (?)", @gameId)
+			elsif @db.execute("SELECT * FROM games WHERE rowid == (?)", @gameId).empty?
 				return false
 			else
 				return true
@@ -35,10 +35,8 @@ module Skymod
 		end
 
 		def install!
-			mod_sql = @db.execute("SELECT * FROM mods WHERE archive_name == (?)", File.basename(@archive.filename))
-			if mod_sql[1] = "True"
-				return ;
-			end
+			return if @installed == "false"
+			game_dir = @db.execute("SELECT path FROM games WHERE rowid == (?)", @gameId).first.first
 			fomod_dir = Skymod::Dir.no_case_find(@archive.base_extract_dir, "fomod")
 			if fomod_dir
 				module_config_xml_path = Skymod::Dir.no_case_find(fomod_dir, "ModuleConfig.xml")
@@ -49,6 +47,7 @@ module Skymod
 			end
 
 			installer.prepare.run
+			@installed = "true"
 		end
 
 		def uninstall!
@@ -58,7 +57,7 @@ module Skymod
 			files.each do |file|
 				File.delete(File.join(data_dir, file.first)) if file.first
 			end
-			@db.execute("DELETE FROM mod_files WHERE modId == (?)", @modId)
+			@installed = "false"
 		end
 	end
 end
