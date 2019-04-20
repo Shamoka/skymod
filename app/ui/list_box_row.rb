@@ -8,6 +8,7 @@ module Skymod
 
 				bind_template_child 'modListBoxRowInfo'
 				bind_template_child 'modListBoxRowText'
+				bind_template_child 'modListBoxInstallButton'
 			end
 		end
 
@@ -15,6 +16,9 @@ module Skymod
 			super()
 			modListBoxRowText.buffer.text = item[0]
 			modListBoxRowInfo.buffer.text = "installed: " + item[1]
+
+			modListBoxInstallButton.signal_connect :clicked do |widget|
+			end
 		end
 	end
 end

@@ -30,7 +30,6 @@ module Skymod
 					mod.save!
 					mod.extract!
 				end
-				mod.install!(game_dir)
 			end
 		end
 	end
