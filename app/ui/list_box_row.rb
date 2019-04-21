@@ -6,20 +6,17 @@ module Skymod
 			def init
 				set_template resource: '/org/shamoka/skymod/ui/ListBoxRow.ui'
 
-				bind_template_child 'modListBoxRowInfo'
 				bind_template_child 'modListBoxRowText'
-				bind_template_child 'modListBoxInstallButton'
+				bind_template_child 'modListBoxRowInstall'
 			end
 		end
 
-		def initialize(item)
+		def initialize(mod)
 			super()
-			modListBoxRowText.buffer.text = item[0]
-			modListBoxRowInfo.buffer.text = "installed: " + item[1]
 
-			modListBoxInstallButton.signal_connect :clicked do |widget|
-				mod = application.db.get_mod(item[0], item[2])
-				mod.install!
+			modListBoxRowText.buffer.text = mod.name
+			modListBoxRowInstall.set_active(mod.installed == "true")
+			modListBoxRowInstall.signal_connect :toggled do |widget|
 			end
 		end
 

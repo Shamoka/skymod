@@ -23,7 +23,7 @@ module Skymod
 			modListBox.children.each do |child|
 				modListBox.remove child
 			end
-			application.db.execute("SELECT * FROM mods").each do |mod|
+			application.db.all_mods_for_game(1).each do |mod|
 				modListBox.add(Skymod::ListBoxRow.new(mod))
 			end
 		end

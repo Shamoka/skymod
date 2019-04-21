@@ -8,31 +8,34 @@ module Skymod
 		attr_accessor :archive
 		attr_accessor :installed
 		attr_accessor :modId
+		attr_accessor :name
 
 		def initialize(filename, db, app_root, gameId)
 			@archive = Archive.new(app_root, filename)
+			@name = File.basename(filename, File.extname(filename))
 			@db = db
 			@gameId = gameId
 			@installed = "false"
 		end
 
 		def save!
-			name = File.basename(@archive.filename)
-			@db.execute("INSERT INTO mods(archive_name, installed, gameId) VALUES (?, ?, ?)", name, @installed, @gameId)
+			@db.execute("INSERT INTO mods(archive_name, installed, gameId) 
+						VALUES (?, ?, ?)", 
+						File.basename(@archive.filename), @installed, @gameId)
 		end
 
 		def update_installed!
-			@db.execute("UPDATE mods SET installed = (?) WHERE rowid == (?)", @installed, @modId)
+			@db.execute("UPDATE mods 
+						SET installed = (?) 
+						WHERE rowid == (?)", 
+						@installed, @modId)
 		end
 
 		def exists?
-			if @db.execute("SELECT * FROM mods WHERE archive_name == (?)", File.basename(@archive.filename)).empty?
-				return false
-			elsif @db.execute("SELECT * FROM games WHERE rowid == (?)", @gameId).empty?
-				return false
-			else
-				return true
-			end
+			not @db.execute("SELECT * FROM mods 
+							WHERE archive_name == (?) 
+							AND gameId == (?)", 
+							File.basename(@archive.filename), @gameId).empty?
 		end
 
 		def extract!

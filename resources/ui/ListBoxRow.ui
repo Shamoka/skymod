@@ -14,7 +14,6 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="spacing">5</property>
-        <property name="homogeneous">True</property>
         <child>
           <object class="GtkTextView" id="modListBoxRowText">
             <property name="visible">True</property>
@@ -32,45 +31,19 @@
           </packing>
         </child>
         <child>
-          <object class="GtkTextView" id="modListBoxRowInfo">
+          <object class="GtkCheckButton" id="modListBoxRowInstall">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="editable">False</property>
-            <property name="wrap_mode">char</property>
-            <property name="cursor_visible">False</property>
-            <property name="buffer">textbuffer1</property>
-          </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="modListBoxInstallButton">
-            <property name="label" translatable="yes">install</property>
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
+            <property name="receives_default">False</property>
+            <property name="draw_indicator">True</property>
+            <child>
+              <placeholder/>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton">
-            <property name="label" translatable="yes">Uninstall</property>
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
-            <property name="image_position">right</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">3</property>
           </packing>
         </child>
       </object>
