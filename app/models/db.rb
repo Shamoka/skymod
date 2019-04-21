@@ -33,6 +33,16 @@ module Skymod
 			end
 		end
 
+		def games
+			games = Array.new
+			@db.execute("SELECT *, rowid FROM games").each do |game_sql|
+				game = Game.new(game_sql['name'], game_sql['path'], self)
+				game.id = game_sql['rowid']
+				games << game
+			end
+			return games
+		end
+
 		def get_game(gameId)
 			game_sql = @db.execute("SELECT *, rowid
 								   FROM games

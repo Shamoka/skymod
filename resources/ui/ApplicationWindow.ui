@@ -1,80 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.22.1 -->
 <interface>
-	<requires lib="gtk+" version="3.20"/>
-	<template class="SkymodApplicationWindow" parent="GtkApplicationWindow">
-		<property name="width_request">800</property>
-		<property name="height_request">600</property>
-		<property name="can_focus">False</property>
-		<child>
-			<placeholder/>
-		</child>
-		<child>
-			<object class="GtkBox">
-				<property name="visible">True</property>
-				<property name="can_focus">False</property>
-				<property name="orientation">vertical</property>
-				<child>
-					<object class="GtkMenuBar" id="menu">
-						<property name="visible">True</property>
-						<property name="can_focus">False</property>
-						<child>
-							<object class="GtkMenuItem">
-								<property name="visible">True</property>
-								<property name="can_focus">False</property>
-								<property name="label" translatable="yes">_File</property>
-								<property name="use_underline">True</property>
-								<child type="submenu">
-									<object class="GtkMenu">
-										<property name="visible">True</property>
-										<property name="can_focus">False</property>
-										<child>
-											<object class="GtkMenuItem" id="menuAddGame">
-												<property name="label">Add Game</property>
-												<property name="visible">True</property>
-												<property name="can_focus">False</property>
-												<property name="use_underline">True</property>
-											</object>
-										</child>
-										<child>
-											<object class="GtkMenuItem" id="menuChooseGame">
-												<property name="label">Choose Game</property>
-												<property name="visible">True</property>
-												<property name="can_focus">False</property>
-												<property name="use_underline">True</property>
-											</object>
-										</child>
-										<child>
-											<object class="GtkMenuItem" id="menuQuit">
-												<property name="label">Quit</property>
-												<property name="visible">True</property>
-												<property name="can_focus">False</property>
-												<property name="use_underline">True</property>
-											</object>
-										</child>
-									</object>
-								</child>
-							</object>
-						</child>
-					</object>
-					<packing>
-						<property name="expand">False</property>
-						<property name="fill">True</property>
-						<property name="position">0</property>
-					</packing>
-				</child>
-				<child>
-					<object class="GtkListBox" id="modListBox">
-						<property name="visible">True</property>
-						<property name="can_focus">False</property>
-					</object>
-					<packing>
-						<property name="expand">False</property>
-						<property name="fill">True</property>
-						<property name="position">1</property>
-					</packing>
-				</child>
-			</object>
-		</child>
-	</template>
+  <requires lib="gtk+" version="3.20"/>
+  <template class="SkymodApplicationWindow" parent="GtkApplicationWindow">
+    <property name="width_request">800</property>
+    <property name="height_request">600</property>
+    <property name="can_focus">False</property>
+    <child>
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkMenuBar" id="menu">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkMenuItem">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">_File</property>
+                <property name="use_underline">True</property>
+                <child type="submenu">
+                  <object class="GtkMenu">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkMenuItem" id="menuAddGame">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label">Add Game</property>
+                        <property name="use_underline">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="menuChooseGame">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label">Choose Game</property>
+                        <property name="use_underline">True</property>
+                        <child type="submenu">
+                          <object class="GtkMenu" id="menuGameList">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="menuRefresh">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label">Refresh archives</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="menuQuit">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label">Quit</property>
+                        <property name="use_underline">True</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkListBox" id="modListBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </template>
 </interface>
