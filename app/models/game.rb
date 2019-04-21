@@ -2,12 +2,14 @@ module Skymod
 	class Game
 		attr_reader	:path
 		attr_reader	:name
+		attr_reader :data_dir
 		attr_accessor	:id
 
 		def initialize(name, path, db)
 			@name = name
 			@path = path
 			@db = db
+			@data_dir = Skymod::Dir.no_case_find(@path, "Data")
 		end
 
 		def exists?
