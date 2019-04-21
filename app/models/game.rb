@@ -25,11 +25,10 @@ module Skymod
 			mods = Array.new
 			@db.execute("SELECT *, rowid 
 						FROM mods 
-						WHERE gameId == (?)",
-						@id) do |row|
+						WHERE gameId == (?)", @id) do |row|
 				mod = Mod.new(row['archive_name'], @db, @id)
 				mod.installed = row['installed']
-				mod.modId = row['rowid']
+				mod.id = row['rowid']
 				mods << mod
 			end
 			return mods

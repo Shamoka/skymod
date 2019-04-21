@@ -2,8 +2,8 @@ require './app/libs/installer.rb'
 
 module Skymod
 	class FomodInstaller < Installer
-		def initialize(game_dir, doc, root, db, modId)
-			super game_dir, root, db, modId
+		def initialize(game, mod, db, doc)
+			super(game, mod, db)
 			@xml = doc.root
 			@name = nil
 			@dependecies = Array.new

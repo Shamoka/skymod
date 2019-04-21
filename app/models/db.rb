@@ -24,14 +24,20 @@ module Skymod
 		end
 
 		def execute(*cmd)
-			@db.execute(*cmd)
+			if block_given?
+				@db.execute(*cmd) do |row|
+					yield row
+				end
+			else 
+				@db.execute(*cmd)
+			end
 		end
 
 		def get_game(gameId)
 			game_sql = @db.execute("SELECT *, rowid
 								   FROM games
 								   WHERE rowid == (?)", gameId).first
-			game = Game.new(game_sql['name'], game_sql['path'], @db)
+			game = Game.new(game_sql['name'], game_sql['path'], self)
 			game.id = game_sql['rowid']
 			return game
 		end
@@ -42,7 +48,7 @@ module Skymod
 			game = File.basename(archive_dir)
 			gameId = @db.execute("SELECT rowid FROM games WHERE name == (?)", game).first['rowid']
 			Dir.glob(File.join(archive_dir, "*.7z")).each do |archive_file|
-				mod = Mod.new(archive_file, @db, gameId)
+				mod = Mod.new(archive_file, self, gameId)
 				if not mod.exists?
 					mod.save!
 					mod.extract!

@@ -2,12 +2,12 @@ module Skymod
 	attr_accessor :installed_files
 
 	class Installer
-		def initialize(game_dir, root, db, modId)
+		def initialize(game, mod, db)
 			@installed_files = Array.new
-			@game_dir = game_dir
-			@root = root
+			@game_dir = game.path
+			@root = mod.archive.base_extract_dir
 			@db = db
-			@modId = modId
+			@modId = mod.id
 		end
 
 		private

@@ -7,7 +7,7 @@ module Skymod
 	class Mod
 		attr_accessor :archive
 		attr_accessor :installed
-		attr_accessor :modId
+		attr_accessor :id
 		attr_accessor :name
 
 		def initialize(filename, db, gameId)
@@ -28,7 +28,7 @@ module Skymod
 			@db.execute("UPDATE mods 
 						SET installed = (?) 
 						WHERE rowid == (?)", 
-						@installed, @modId)
+						@installed, @id)
 		end
 
 		def exists?
@@ -44,14 +44,14 @@ module Skymod
 
 		def install!
 			return if @installed == "true"
-			game_dir = @db.execute("SELECT path FROM games WHERE rowid == (?)", @gameId).first['path']
+			game = @db.get_game(@gameId)
 			fomod_dir = Skymod::Dir.no_case_find(@archive.base_extract_dir, "fomod")
 			if fomod_dir
 				module_config_xml_path = Skymod::Dir.no_case_find(fomod_dir, "ModuleConfig.xml")
 				module_config_xml = REXML::Document.new(File.open(module_config_xml_path))
-				installer = Skymod::FomodInstaller.new(game_dir, module_config_xml, @archive.base_extract_dir, @db, @modId)
+				installer = Skymod::FomodInstaller.new(game, self, @db, module_config_xml)
 			else
-				installer = Skymod::DirectInstaller.new(game_dir, @archive.base_extract_dir, @db, @modId)
+				installer = Skymod::DirectInstaller.new(game, self, @db)
 			end
 
 			installer.prepare.run
@@ -61,10 +61,10 @@ module Skymod
 
 		def uninstall!
 			return if @installed == "false"
-			raise ModNotFoundException if @modId.nil? 
-			game_dir = @db.execute("SELECT path FROM games WHERE rowid == (?)", @gameId).first['path']
+			raise ModNotFoundException if @id.nil? 
+			game = @db.get_game(@gameId)
 			data_dir = Skymod::Dir.no_case_find(game_dir, "Data")
-			files = @db.execute("SELECT path FROM mod_files WHERE modId == (?)", @modId)
+			files = @db.execute("SELECT path FROM mod_files WHERE modId == (?)", @id)
 			files.each do |file|
 				File.delete(File.join(data_dir, file['path'])) if file.first
 			end

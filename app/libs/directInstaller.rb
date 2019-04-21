@@ -1,7 +1,7 @@
 module Skymod
 	class DirectInstaller < Installer
-		def initialize(game_dir, root, db, modId)
-			super game_dir, root, db, modId
+		def initialize(game, mod, db)
+			super(game, mod, db)
 			@data_dir = Skymod::Dir.no_case_find(@root, "data")
 			@data_dir = @root if @data_dir.nil?
 		end
