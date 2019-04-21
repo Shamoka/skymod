@@ -2,6 +2,7 @@
 
 require 'gtk3'
 require 'fileutils'
+require 'sqlite3'
 
 $app_root = Dir.pwd
 Dir.glob(File.join($app_root, "app", "{ui,models,libs}", "*.rb")).each do |file|

@@ -2,6 +2,7 @@ module Skymod
 	class DB
 		def initialize
 			@db = SQLite3::Database.new(File.join($app_root, "data", "mods.db"))
+			@db.results_as_hash = true
 			begin
 				@db.execute("SELECT * FROM mods")
 			rescue
@@ -30,8 +31,8 @@ module Skymod
 			game_sql = @db.execute("SELECT *, rowid
 								   FROM games
 								   WHERE rowid == (?)", gameId).first
-			game = Game.new(game_sql[0], game_sql[1], @db)
-			game.id = game_sql[2]
+			game = Game.new(game_sql['name'], game_sql['path'], @db)
+			game.id = game_sql['rowid']
 			return game
 		end
 
@@ -39,7 +40,7 @@ module Skymod
 
 		def check_archives(archive_dir)
 			game = File.basename(archive_dir)
-			gameId = @db.execute("SELECT DISTINCT rowid FROM games WHERE name == (?)", game).first.first
+			gameId = @db.execute("SELECT rowid FROM games WHERE name == (?)", game).first['rowid']
 			Dir.glob(File.join(archive_dir, "*.7z")).each do |archive_file|
 				mod = Mod.new(archive_file, @db, gameId)
 				if not mod.exists?

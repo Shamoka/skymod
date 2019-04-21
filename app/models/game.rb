@@ -23,10 +23,13 @@ module Skymod
 
 		def mods
 			mods = Array.new
-			@db.execute("SELECT *, rowid FROM mods WHERE gameId == (?)", @id).each do |row|
-				mod = Mod.new(row[0], @db, @id)
-				mod.installed = row[1]
-				mod.modId = row[3]
+			@db.execute("SELECT *, rowid 
+						FROM mods 
+						WHERE gameId == (?)",
+						Hash.new, @id) do |row|
+				mod = Mod.new(row['archive_name'], @db, @id)
+				mod.installed = row['installed']
+				mod.modId = row['rowid']
 				mods << mod
 			end
 			return mods
