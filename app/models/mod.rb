@@ -38,10 +38,6 @@ module Skymod
 							File.basename(@archive.filename), @gameId).empty?
 		end
 
-		def extract!
-			@archive.extract
-		end
-
 		def install!
 			return if @installed == "true"
 			game = @db.get_game(@gameId)

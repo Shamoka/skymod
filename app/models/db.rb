@@ -50,8 +50,8 @@ module Skymod
 			Dir.glob(File.join(archive_dir, "*.7z")).each do |archive_file|
 				mod = Mod.new(archive_file, self, gameId)
 				if not mod.exists?
+					mod.archive.extract
 					mod.save!
-					mod.extract!
 				end
 			end
 		end
