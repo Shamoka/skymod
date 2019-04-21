@@ -62,12 +62,14 @@ module Skymod
 		def uninstall!
 			return if @installed == "false"
 			raise ModNotFoundException if @modId.nil? 
+			game_dir = @db.execute("SELECT path FROM games WHERE rowid == (?)", @gameId).first.first
 			data_dir = Skymod::Dir.no_case_find(game_dir, "Data")
 			files = @db.execute("SELECT path FROM mod_files WHERE modId == (?)", @modId)
 			files.each do |file|
 				File.delete(File.join(data_dir, file.first)) if file.first
 			end
 			@installed = "false"
+			self.update_installed!
 		end
 	end
 end

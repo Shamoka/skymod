@@ -14,9 +14,16 @@ module Skymod
 		def initialize(mod)
 			super()
 
+			@mod = mod
+
 			modListBoxRowText.buffer.text = mod.name
 			modListBoxRowInstall.set_active(mod.installed == "true")
 			modListBoxRowInstall.signal_connect :toggled do |widget|
+				if widget.active?
+					@mod.install!
+				else
+					@mod.uninstall!
+				end
 			end
 		end
 
