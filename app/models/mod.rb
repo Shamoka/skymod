@@ -10,8 +10,8 @@ module Skymod
 		attr_accessor :modId
 		attr_accessor :name
 
-		def initialize(filename, db, app_root, gameId)
-			@archive = Archive.new(app_root, filename)
+		def initialize(filename, db, gameId)
+			@archive = Archive.new($app_root, filename)
 			@name = File.basename(filename, File.extname(filename))
 			@db = db
 			@gameId = gameId

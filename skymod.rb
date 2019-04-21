@@ -3,13 +3,13 @@
 require 'gtk3'
 require 'fileutils'
 
-root = File.expand_path(__dir__)
-Dir.glob(File.join(root, "app", "{ui,models,libs}", "*.rb")).each do |file|
+$app_root = Dir.pwd
+Dir.glob(File.join($app_root, "app", "{ui,models,libs}", "*.rb")).each do |file|
 	require file
 end
 
-resource_xml = File.join(root, 'resources', 'gresources.xml')
-resource_bin = File.join(root, 'gresource.bin')
+resource_xml = File.join($app_root, 'resources', 'gresources.xml')
+resource_bin = File.join($app_root, 'gresource.bin')
 
 system("glib-compile-resources",
 	   "--target", resource_bin,
@@ -23,6 +23,6 @@ at_exit do
 	FileUtils.rm_f(resource_bin)
 end
 
-app = Skymod::Application.new(root)
+app = Skymod::Application.new
 
 app.run

@@ -4,10 +4,10 @@ module Skymod
 	class Application < Gtk::Application
 		attr_accessor :db
 
-		def initialize(app_root)
+		def initialize
 			super 'org.shamoka.skymod', Gio::ApplicationFlags::FLAGS_NONE
 
-			@db = Skymod::DB.new(app_root)
+			@db = Skymod::DB.new
 
 			signal_connect :activate do |application|
 				window = Skymod::ApplicationWindow.new(application)

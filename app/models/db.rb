@@ -1,8 +1,7 @@
 module Skymod 
 	class DB
-		def initialize(app_root)
-			@db = SQLite3::Database.new(File.join(app_root, "data", "mods.db"))
-			@app_root = app_root
+		def initialize
+			@db = SQLite3::Database.new(File.join($app_root, "data", "mods.db"))
 			begin
 				@db.execute("SELECT * FROM mods")
 			rescue
@@ -20,22 +19,20 @@ module Skymod
 							FOREIGN KEY(modId) REFERENCES mods(rowid))")
 				@db.execute("INSERT INTO games(name, path) VALUES('test', './tmp')")
 			end
-			check_archives(File.join(app_root, "data", "archives", "test"))
+			check_archives(File.join($app_root, "data", "archives", "test"))
 		end
 
 		def execute(cmd)
 			@db.execute(cmd)
 		end
 
-		def all_mods_for_game(gameId)
-			mods = Array.new
-			@db.execute("SELECT *, rowid FROM mods WHERE gameId == (?)", gameId).each do |row|
-				mod = Mod.new(row[0], @db, @app_root, gameId)
-				mod.installed = row[1]
-				mod.modId = row[3]
-				mods << mod
-			end
-			return mods
+		def get_game(gameId)
+			game_sql = @db.execute("SELECT *, rowid
+								   FROM games
+								   WHERE rowid == (?)", gameId).first
+			game = Game.new(game_sql[0], game_sql[1], @db)
+			game.id = game_sql[2]
+			return game
 		end
 
 		private
@@ -44,7 +41,7 @@ module Skymod
 			game = File.basename(archive_dir)
 			gameId = @db.execute("SELECT DISTINCT rowid FROM games WHERE name == (?)", game).first.first
 			Dir.glob(File.join(archive_dir, "*.7z")).each do |archive_file|
-				mod = Mod.new(archive_file, @db, @app_root, gameId)
+				mod = Mod.new(archive_file, @db, gameId)
 				if not mod.exists?
 					mod.save!
 					mod.extract!
