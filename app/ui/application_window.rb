@@ -60,8 +60,11 @@ module Skymod
 			modListBox.children.each do |child|
 				modListBox.remove child
 			end
+
 			if not application.current_game.nil?
-				application.db.get_game(application.current_game).mods.each do |mod|
+				game = application.db.get_game(application.current_game)
+				game.check_archives
+				game.mods.each do |mod|
 					modListBox.add(Skymod::ListBoxRow.new(mod))
 				end
 			end

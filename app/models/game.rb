@@ -35,5 +35,16 @@ module Skymod
 			end
 			return mods
 		end
+
+		def check_archives
+			archive_dir = File.join($app_root, "data", "archives", @name)
+			Dir.glob(File.join(archive_dir, "*.7z")).each do |archive_file|
+				mod = Mod.new(archive_file, @db, @id)
+				if not mod.exists?
+					mod.archive.extract
+					mod.save!
+				end
+			end
+		end
 	end
 end
