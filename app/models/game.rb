@@ -18,7 +18,7 @@ module Skymod
 
 		def save!
 			@db.execute("INSERT INTO games(name, path)
-						VALUE((?), (?))", @name, @path)
+						VALUES(?, ?)", @name, @path)
 		end
 
 		def mods
@@ -26,7 +26,7 @@ module Skymod
 			@db.execute("SELECT *, rowid 
 						FROM mods 
 						WHERE gameId == (?)",
-						Hash.new, @id) do |row|
+						@id) do |row|
 				mod = Mod.new(row['archive_name'], @db, @id)
 				mod.installed = row['installed']
 				mod.modId = row['rowid']

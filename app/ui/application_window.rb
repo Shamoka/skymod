@@ -7,6 +7,9 @@ module Skymod
 				set_template resource: "/org/shamoka/skymod/ui/ApplicationWindow.ui"
 
 				bind_template_child 'modListBox'
+				bind_template_child 'menuAddGame'
+				bind_template_child 'menuChooseGame'
+				bind_template_child 'menuQuit'
 			end
 		end
 
@@ -15,6 +18,18 @@ module Skymod
 
 			set_title 'Skymod'
 			load_modules(application)
+
+			menuQuit.signal_connect :activate do |widget|
+				application.quit
+			end
+			menuAddGame.signal_connect :activate do |widget|
+				dialog = Skymod::AddGameDialog.new
+				if dialog.run == Gtk::ResponseType::OK
+					game = Game.new(dialog.name, dialog.path, application.db)
+					game.save! if not game.exists?
+				end
+				dialog.destroy
+			end
 		end
 
 		private

@@ -23,8 +23,8 @@ module Skymod
 			check_archives(File.join($app_root, "data", "archives", "test"))
 		end
 
-		def execute(cmd)
-			@db.execute(cmd)
+		def execute(*cmd)
+			@db.execute(*cmd)
 		end
 
 		def get_game(gameId)
