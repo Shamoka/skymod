@@ -68,7 +68,7 @@ module Skymod
 						label.buffer.text = @name
 						label.visible = true
 						box.add(label)
-						plugin_list = plugins.print(box)
+						plugin_list = plugins.print(box, @type)
 					end
 				end
 
@@ -87,7 +87,41 @@ module Skymod
 					end
 				end
 
-				def print(box)
+				def print(box, type)
+					if type == "SelectAll"
+						build_select_all(box)
+					elsif type == "SelectExactlyOne"
+						build_exactly_one(box)
+					end
+					sep = Gtk::Separator.new(Gtk::Orientation::HORIZONTAL)
+					sep.visible = true
+					box.add(sep)
+				end
+
+				def build_exactly_one(box)
+					plugin_list = Array.new
+					radio_group = nil
+					@plugin.each do |plugin|
+						radio = Gtk::RadioButton.new
+						if not radio_group.nil?
+							radio.group = radio_group
+						end
+						radio_group = radio.group
+						radio.label = plugin.name
+						radio.visible = true
+						plugin_list << radio
+					end
+					if @order == "Ascending"
+						plugin_list.sort! { |a, b| a.label <=> b.label }
+					elsif @order == "Descending"
+						plugin_list.sort! { |a, b| b.label <=> a.label }
+					end
+					plugin_list.each do |plugin|
+						box.add(plugin)
+					end
+				end
+
+				def build_select_all(box)
 					plugin_list = Array.new
 					@plugin.each do |plugin|
 						plugin_box = Gtk::CheckButton.new
@@ -103,9 +137,6 @@ module Skymod
 					plugin_list.each do |plugin|
 						box.add(plugin)
 					end
-					sep = Gtk::Separator.new(Gtk::Orientation::HORIZONTAL)
-					sep.visible = true
-					box.add(sep)
 				end
 			end
 
