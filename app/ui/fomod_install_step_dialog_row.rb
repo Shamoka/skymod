@@ -14,6 +14,7 @@ module Skymod
 			super()
 
 			optionalFileGroup.groups.each do |group|
+
 				group.plugins.each do |plugins|
 					plugin_list = Array.new
 					plugins.plugin.each do |plugin|
@@ -30,6 +31,9 @@ module Skymod
 					plugin_list.each do |plugin|
 						box.add(plugin)
 					end
+					sep = Gtk::Separator.new(Gtk::Orientation::HORIZONTAL)
+					sep.visible = true
+					box.add(sep)
 				end
 			end
 		end
