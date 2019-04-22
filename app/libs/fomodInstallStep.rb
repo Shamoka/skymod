@@ -89,10 +89,30 @@ module Skymod
 
 				def print(box, type)
 					plugin_list = Array.new
+					button = nil
 					if type == "SelectAll"
-						build_select_all(plugin_list)
+						build_checkbox(plugin_list)
+						plugin_list.each do |plugin|
+							plugin.active = true
+							plugin.signal_connect :toggled do |p|
+								p.active = true
+							end
+						end
+					elsif type == "SelectAtMostOne" 
+						build_radio(plugin_list)
+						hidden_radio = Gtk::RadioButton.new
+						hidden_radio.group = plugin_list.last.group
+						plugin_list << hidden_radio
+						button = Gtk::Button.new
+						button.label = "Clear selection"
+						button.visible = true
+						button.signal_connect :clicked do |w|
+							hidden_radio.active = true
+						end
+					elsif type == "SelectAny"
+						build_checkbox(plugin_list)
 					elsif type == "SelectExactlyOne"
-						build_exactly_one(plugin_list)
+						build_radio(plugin_list)
 					end
 					if @order == "Ascending"
 						plugin_list.sort! { |a, b| a.label <=> b.label }
@@ -104,10 +124,13 @@ module Skymod
 					end
 					sep = Gtk::Separator.new(Gtk::Orientation::HORIZONTAL)
 					sep.visible = true
+					box.add(button) if button
 					box.add(sep)
 				end
 
-				def build_exactly_one(plugin_list)
+				private
+
+				def build_radio(plugin_list)
 					radio_group = nil
 					@plugin.each do |plugin|
 						radio = Gtk::RadioButton.new
@@ -121,7 +144,7 @@ module Skymod
 					end
 				end
 
-				def build_select_all(plugin_list)
+				def build_checkbox(plugin_list)
 					@plugin.each do |plugin|
 						plugin_box = Gtk::CheckButton.new
 						plugin_box.label = plugin.name
