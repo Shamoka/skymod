@@ -88,18 +88,26 @@ module Skymod
 				end
 
 				def print(box, type)
+					plugin_list = Array.new
 					if type == "SelectAll"
-						build_select_all(box)
+						build_select_all(plugin_list)
 					elsif type == "SelectExactlyOne"
-						build_exactly_one(box)
+						build_exactly_one(plugin_list)
+					end
+					if @order == "Ascending"
+						plugin_list.sort! { |a, b| a.label <=> b.label }
+					elsif @order == "Descending"
+						plugin_list.sort! { |a, b| b.label <=> a.label }
+					end
+					plugin_list.each do |plugin|
+						box.add(plugin)
 					end
 					sep = Gtk::Separator.new(Gtk::Orientation::HORIZONTAL)
 					sep.visible = true
 					box.add(sep)
 				end
 
-				def build_exactly_one(box)
-					plugin_list = Array.new
+				def build_exactly_one(plugin_list)
 					radio_group = nil
 					@plugin.each do |plugin|
 						radio = Gtk::RadioButton.new
@@ -111,31 +119,14 @@ module Skymod
 						radio.visible = true
 						plugin_list << radio
 					end
-					if @order == "Ascending"
-						plugin_list.sort! { |a, b| a.label <=> b.label }
-					elsif @order == "Descending"
-						plugin_list.sort! { |a, b| b.label <=> a.label }
-					end
-					plugin_list.each do |plugin|
-						box.add(plugin)
-					end
 				end
 
-				def build_select_all(box)
-					plugin_list = Array.new
+				def build_select_all(plugin_list)
 					@plugin.each do |plugin|
 						plugin_box = Gtk::CheckButton.new
 						plugin_box.label = plugin.name
 						plugin_box.visible = true
 						plugin_list << plugin_box
-					end
-					if @order == "Ascending"
-						plugin_list.sort! { |a, b| a.label <=> b.label }
-					elsif @order == "Descending"
-						plugin_list.sort! { |a, b| b.label <=> a.label }
-					end
-					plugin_list.each do |plugin|
-						box.add(plugin)
 					end
 				end
 			end
