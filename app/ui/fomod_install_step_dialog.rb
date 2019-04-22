@@ -15,6 +15,8 @@ module Skymod
 		def initialize(installStep)
 			super()
 
+			set_title(installStep.name)
+
 			installStep.optional_file_groups.each do |opt|
 				row = FomodInstallStepDialogRow.new(opt)
 				fomodInstallStepListBox.add(row)

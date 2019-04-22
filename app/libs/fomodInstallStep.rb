@@ -3,9 +3,12 @@ module Skymod
 		class InstallStep
 			attr_reader	:optional_file_groups
 			attr_reader :visible
+			attr_reader	:name
 
 			def initialize(xml)
 				@optional_file_groups = Array.new
+
+				@name = xml.attributes['name']
 
 				if xml.elements['visible']
 					v = xml.elements['visible'].elements.first
@@ -13,14 +16,7 @@ module Skymod
 				end
 
 				xml.each_element('optionalFileGroups') do |opt|
-					@optional_file_groups << Group.new(opt)
-				end
-			end
-
-			def debug
-				puts "InstallStep"
-				@optional_file_groups.each do |opt|
-					opt.debug
+					@optional_file_groups << OptionalFileGroup.new(opt)
 				end
 			end
 
@@ -32,11 +28,17 @@ module Skymod
 					@name = xml.attributes['name']
 					@value = xml.attributes['value'] || xml.text
 				end
+			end
 
-				def debug
-					puts "-------- Flag"
-					puts "         name: " + @name
-					puts "         value: " + @value
+			class OptionalFileGroup
+				attr_reader :groups
+
+				def initialize(xml)
+					@groups = Array.new
+
+					xml.each_element('group') do |group|
+						@groups << Group.new(group)
+					end
 				end
 			end
 
@@ -46,20 +48,27 @@ module Skymod
 
 				def initialize(xml)
 					@plugins = Array.new
-					plugins = xml.elements['group'].elements['plugins']
-					@order = plugins.attributes['order']
-					plugins.each_element('plugin') do |plugin|
-						@plugins << Plugin.new(plugin)
+					@type = xml.attributes['type']
+					xml.each_element('plugins') do |plugins_iter|
+						@plugins << Plugins.new(plugins_iter)
 					end
 				end
 
-				def debug
-					puts "-- Group"
-					puts "   order: " + @order
-					plugins.each do |plugin|
-						plugin.debug
+			end
+
+			class Plugins
+				attr_reader :order
+				attr_reader	:plugin
+
+				def initialize(xml)
+					@plugin = Array.new
+					@order = xml.attributes['order']
+
+					xml.each_element('plugin') do |plugin_iter|
+						@plugin <<  Plugin.new(plugin_iter)
 					end
 				end
+
 			end
 
 			class Plugin
@@ -84,16 +93,6 @@ module Skymod
 					end
 				end
 
-				def debug
-					puts "------ Plugin"
-					puts "       name: " + @name
-					@flags.each do |flag|
-						flag.debug
-					end
-					@files.each do |file|
-						file.debug
-					end
-				end
 			end
 
 			class File
@@ -112,14 +111,6 @@ module Skymod
 					@source = xml.attributes['source']
 					@destination = xml.attributes['destination']
 					@priority = xml.attributes['priority']
-				end
-
-				def debug
-					puts "-------- File"
-					puts "         type: " + @type.to_s
-					puts "         source: " + @source
-					puts "         destination: " + @destination
-					puts "         priority: " + @priority
 				end
 			end
 		end

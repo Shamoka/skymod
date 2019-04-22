@@ -2,16 +2,20 @@
 <!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
-  <object class="GtkTextBuffer" id="textbuffer1"/>
   <template class="SkymodFomodInstallStepDialogRow" parent="GtkListBoxRow">
     <property name="visible">True</property>
     <property name="can_focus">True</property>
     <child>
-      <object class="GtkTextView" id="fomodTestText">
+      <object class="GtkBox" id="box">
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="buffer">textbuffer1</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child>
+          <placeholder/>
+        </child>
       </object>
     </child>
   </template>
+  <object class="GtkTextBuffer" id="textbuffer1"/>
 </interface>
