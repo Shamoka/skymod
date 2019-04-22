@@ -40,6 +40,12 @@ module Skymod
 						@groups << Group.new(group)
 					end
 				end
+
+				def print(box)
+					@groups.each do |group|
+						group.print(box)
+					end
+				end
 			end
 
 			class Group
@@ -51,6 +57,12 @@ module Skymod
 					@type = xml.attributes['type']
 					xml.each_element('plugins') do |plugins_iter|
 						@plugins << Plugins.new(plugins_iter)
+					end
+				end
+
+				def print(box)
+					@plugins.each do |plugins|
+						plugin_list = plugins.print(box)
 					end
 				end
 
@@ -69,6 +81,26 @@ module Skymod
 					end
 				end
 
+				def print(box)
+					plugin_list = Array.new
+					@plugin.each do |plugin|
+						plugin_box = Gtk::CheckButton.new
+						plugin_box.label = plugin.name
+						plugin_box.visible = true
+						plugin_list << plugin_box
+					end
+					if @order == "Ascending"
+						plugin_list.sort! { |a, b| a.label <=> b.label }
+					elsif @order == "Descending"
+						plugin_list.sort! { |a, b| b.label <=> a.label }
+					end
+					plugin_list.each do |plugin|
+						box.add(plugin)
+					end
+					sep = Gtk::Separator.new(Gtk::Orientation::HORIZONTAL)
+					sep.visible = true
+					box.add(sep)
+				end
 			end
 
 			class Plugin
