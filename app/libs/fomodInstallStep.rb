@@ -50,10 +50,12 @@ module Skymod
 
 			class Group
 				attr_reader :plugins
+				attr_reader :name
 				attr_reader :order
 
 				def initialize(xml)
 					@plugins = Array.new
+					@name = xml.attributes['name']
 					@type = xml.attributes['type']
 					xml.each_element('plugins') do |plugins_iter|
 						@plugins << Plugins.new(plugins_iter)
@@ -62,6 +64,10 @@ module Skymod
 
 				def print(box)
 					@plugins.each do |plugins|
+						label = Gtk::TextView.new
+						label.buffer.text = @name
+						label.visible = true
+						box.add(label)
 						plugin_list = plugins.print(box)
 					end
 				end
