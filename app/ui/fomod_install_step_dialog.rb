@@ -2,6 +2,8 @@ module Skymod
 	class FomodInstallStepDialog < Gtk::Dialog
 		type_register
 
+		attr_reader :files
+
 		class << self
 			def init
 				set_template resource: '/org/shamoka/skymod/ui/FomodInstallStepDialog.ui'
@@ -15,7 +17,7 @@ module Skymod
 		def initialize(installStep)
 			super()
 
-			@files_array = Array.new
+			@files = Array.new
 
 			set_title(installStep.name)
 
@@ -24,16 +26,11 @@ module Skymod
 			okButton.signal_connect :clicked do |button|
 				fomodInstallStepListBox.children.each do |row|
 					row.children.each do |elem|
-						if elem.is_a?(Gtk::Button) and elem.active? and elem.visible?
-							@files_array << elem.files
+						if (elem.is_a?(Gtk::RadioButton) or elem.is_a?(Gtk::CheckButton)) and elem.active? and elem.visible?
+							elem.files.each do |file|
+								@files << file
+							end
 						end
-					end
-				end
-				@files_array.each do |files|
-					files.each do |file|
-						puts ("Source: " + file.source)
-						puts ("Destination: = Data/" + file.destination)
-						puts ("Type: " + file.type.to_s)
 					end
 				end
 				self.response(Gtk::ResponseType::OK)

@@ -187,29 +187,10 @@ module Skymod
 					end
 
 					xml.elements['files'].elements.each do |file|
-						@files << File.new(file)
+						@files << Skymod::ModFile.new(file)
 					end
 				end
 
-			end
-
-			class File
-				attr_reader	:type
-				attr_reader	:source
-				attr_reader	:destination
-				attr_reader	:priority
-
-				def initialize(xml)
-					if xml.name == "folder"
-						@type = :folder
-					elsif xml.name == "file"
-						@type = :file
-					end
-
-					@source = xml.attributes['source']
-					@destination = xml.attributes['destination']
-					@priority = xml.attributes['priority']
-				end
 			end
 		end
 	end
