@@ -31,10 +31,6 @@ module Skymod
 				end
 				dialog.destroy
 			end
-			return self
-		end
-
-		def run
 			@files_list.each do |file|
 				if file.type == :folder
 					source = file.source.tr('\\', '/')
@@ -45,6 +41,10 @@ module Skymod
 					@installed_files << new_file
 				end
 			end
+			return self
+		end
+
+		def run
 			copy_files(@data_dir)
 		end
 

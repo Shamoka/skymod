@@ -32,9 +32,13 @@ module Skymod
 			@installed_files.each do |file|
 				real_dir = create_directory_hierarchy(dest_dir, file.source)
 				FileUtils.cp(File.join(@root, file.base, file.source), real_dir)
+				if real_dir == dest_dir
+					real_dir = "."
+				else
+					real_dir.delete_prefix!(dest_dir + '/')
+				end
 				@db.execute("INSERT INTO mod_files(modId, path) VALUES(?, ?)", @modId,
-												File.join(real_dir.delete_prefix(dest_dir + '/'), 
-														  File.basename(file.source)))
+												File.join(real_dir, File.basename(file.source)))
 			end
 		end
 
