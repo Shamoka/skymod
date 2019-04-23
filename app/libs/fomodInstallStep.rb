@@ -20,6 +20,12 @@ module Skymod
 				end
 			end
 
+			def print(box)
+				@optional_file_groups.each do |opt|
+					opt.print(box)
+				end
+			end
+
 			class Flag
 				attr_reader	:name
 				attr_reader :value
@@ -102,6 +108,7 @@ module Skymod
 						build_radio(plugin_list)
 						hidden_radio = Gtk::RadioButton.new
 						hidden_radio.group = plugin_list.last.group
+						hidden_radio.active = true
 						plugin_list << hidden_radio
 						button = Gtk::Button.new
 						button.label = "Clear selection"
@@ -120,12 +127,12 @@ module Skymod
 						plugin_list.sort! { |a, b| b.label <=> a.label }
 					end
 					plugin_list.each do |plugin|
-						box.add(plugin)
+						box.add(create_row(plugin))
 					end
 					sep = Gtk::Separator.new(Gtk::Orientation::HORIZONTAL)
 					sep.visible = true
-					box.add(button) if button
-					box.add(sep)
+					box.add(create_row(sep))
+					box.add(create_row(button)) if button
 				end
 
 				private
@@ -151,6 +158,13 @@ module Skymod
 						plugin_box.visible = true
 						plugin_list << plugin_box
 					end
+				end
+
+				def create_row(elem)
+					row = Gtk::ListBoxRow.new
+					row.visible = true
+					row.add(elem)
+					row
 				end
 			end
 
