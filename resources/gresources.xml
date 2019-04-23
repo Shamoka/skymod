@@ -4,7 +4,6 @@
 		<file preprocess="xml-stripblanks">ui/ApplicationWindow.ui</file>
 		<file preprocess="xml-stripblanks">ui/ListBoxRow.ui</file>
 		<file preprocess="xml-stripblanks">ui/FomodInstallStepDialog.ui</file>
-		<file preprocess="xml-stripblanks">ui/FomodInstallStepDialogRow.ui</file>
 		<file preprocess="xml-stripblanks">ui/AddGameDialog.ui</file>
 	</gresource>
 </gresources>

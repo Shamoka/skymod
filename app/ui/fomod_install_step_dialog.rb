@@ -1,5 +1,3 @@
-require './app/ui/fomod_install_step_dialog_row.rb'
-
 module Skymod
 	class FomodInstallStepDialog < Gtk::Dialog
 		type_register
@@ -17,17 +15,26 @@ module Skymod
 		def initialize(installStep)
 			super()
 
+			@files_array = Array.new
+
 			set_title(installStep.name)
 
-			installStep.optional_file_groups.each do |opt|
-				row = FomodInstallStepDialogRow.new(opt)
-				fomodInstallStepListBox.add(row)
-			end
+			installStep.print(fomodInstallStepListBox)
 
 			okButton.signal_connect :clicked do |button|
-				box = fomodInstallStepListBox.children.first.children.first
-				box.children.each do |child|
-					puts child.label if child.is_a?(Gtk::Button) and child.active?
+				fomodInstallStepListBox.children.each do |row|
+					row.children.each do |elem|
+						if elem.is_a?(Gtk::Button) and elem.active? and elem.visible?
+							@files_array << elem.files
+						end
+					end
+				end
+				@files_array.each do |files|
+					files.each do |file|
+						puts ("Source: " + file.source)
+						puts ("Destination: = Data/" + file.destination)
+						puts ("Type: " + file.type.to_s)
+					end
 				end
 				self.response(Gtk::ResponseType::OK)
 			end

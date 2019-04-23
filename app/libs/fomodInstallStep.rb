@@ -140,7 +140,7 @@ module Skymod
 				def build_radio(plugin_list)
 					radio_group = nil
 					@plugin.each do |plugin|
-						radio = Gtk::RadioButton.new
+						radio = Skymod::FomodInstallStepRadioButton.new(plugin.files)
 						if not radio_group.nil?
 							radio.group = radio_group
 						end
@@ -153,7 +153,7 @@ module Skymod
 
 				def build_checkbox(plugin_list)
 					@plugin.each do |plugin|
-						plugin_box = Gtk::CheckButton.new
+						plugin_box = Skymod::FomodInstallStepCheckButton.new(plugin.files)
 						plugin_box.label = plugin.name
 						plugin_box.visible = true
 						plugin_list << plugin_box
@@ -171,6 +171,7 @@ module Skymod
 			class Plugin
 				attr_reader :name
 				attr_reader :description
+				attr_reader :files
 
 				def initialize(xml)
 					@name = xml.attributes['name']
