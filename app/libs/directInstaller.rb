@@ -7,7 +7,7 @@ module Skymod
 		end
 
 		def prepare
-			add_files_to_list(@data_dir, @data_dir)
+			add_files_to_list(@data_dir, ".", 0)
 			return self
 		end
 

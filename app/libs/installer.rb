@@ -4,10 +4,11 @@ module Skymod
 	class Installer
 		def initialize(game, mod, db)
 			@installed_files = Array.new
-			@game_dir = game.path
+			@game = game
 			@root = mod.archive.base_extract_dir
 			@db = db
 			@modId = mod.id
+			@files_list = Array.new
 		end
 
 		private
@@ -17,36 +18,39 @@ module Skymod
 			while (file = File.dirname(file)) != "."
 				dirs << file
 			end
-			dirs.sort.each do |dir|
+			dirs.sort!.each do |dir|
 				if not target = Skymod::Dir.no_case_find(dest_dir, File.basename(dir))
 					target = File.basename(dir)
 				end
 				dest_dir = File.join(dest_dir, File.basename(target))
 				Dir.mkdir(dest_dir) if not File.exists?(dest_dir)
 			end
-
+			dest_dir
 		end
 
-		def copy_files(base_dir)
-			if not dest_dir = Skymod::Dir.no_case_find(@game_dir,  "Data")
-				dest_dir = File.join(@game_dir, "Data")
-				Dir.mkdir(dest_dir)
-			end
-			@installed_files.sort.each do |file|
-				file_no_prefix = file.delete_prefix(base_dir + '/')
-				create_directory_hierarchy(dest_dir, file_no_prefix)
-				FileUtils.cp(file, File.join(dest_dir, file_no_prefix))
-				@db.execute("INSERT INTO mod_files(modId, path) VALUES(?, ?)", @modId, file_no_prefix)
+		def copy_files(dest_dir)
+			@installed_files.each do |file|
+				real_dir = create_directory_hierarchy(dest_dir, file.source)
+				FileUtils.cp(File.join(@root, file.base, file.source), real_dir)
+				@db.execute("INSERT INTO mod_files(modId, path) VALUES(?, ?)", @modId,
+												File.join(real_dir.delete_prefix(dest_dir + '/'), 
+														  File.basename(file.source)))
 			end
 		end
 
-		def add_files_to_list(base_dir, dir)
-			Dir.children(dir).each do |child|
-				file = File.join(dir, child)
-				if (File.directory?(file))
-					add_files_to_list(base_dir, file)
-				else
-					@installed_files << file
+		def add_folder_to_files(base, dir, priority)
+			full_path = File.join(@root, dir)
+			Dir.entries(full_path).each do |file|
+				if file != '.' and file != '..'
+					file_path = File.join(full_path, file)
+					if File.directory?(file_path)
+						add_folder_to_files(base, File.join(dir, file), priority)
+					else
+						new_file = Skymod::ModFile.new(File.join(dir, file).delete_prefix(base + '/'))
+						new_file.base = base
+						new_file.priority = priority
+						@installed_files << new_file
+					end
 				end
 			end
 		end

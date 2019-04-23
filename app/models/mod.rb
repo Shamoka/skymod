@@ -60,7 +60,10 @@ module Skymod
 			raise ModNotFoundException if @id.nil? 
 			game = @db.get_game(@gameId)
 			get_files.each do |file|
-				File.delete(File.join(game.data_dir, file['path']))
+				path = File.join(game.data_dir, file['path'])
+				if File.exists?(path)
+					File.delete(path)
+				end
 				@db.execute("DELETE FROM mod_files WHERE rowid == (?)", file['rowid'])
 			end
 			@installed = "false"

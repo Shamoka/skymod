@@ -9,13 +9,18 @@ module Skymod
 			@dependecies = Array.new
 			@required_files = Array.new
 			@install_steps = Array.new
-			@files_list = Array.new
+			@data_dir = nil
 		end
 
 		def prepare
 			get_module_name
 			get_required_files
 			get_install_steps
+
+			if not @data_dir = Skymod::Dir.no_case_find(@game.path,  "Data")
+				@data_dir = File.join(@game.path, "Data")
+				Dir.mkdir(@data_dir)
+			end
 
 			@install_steps.each do |is|
 				dialog = FomodInstallStepDialog.new(is)
@@ -30,16 +35,17 @@ module Skymod
 		end
 
 		def run
-			puts @root
 			@files_list.each do |file|
 				if file.type == :folder
-					dir = Skymod::Dir.find_dir_no_case(@root, file.source)
-					add_files_to_list(@root, dir) if dir
+					source = file.source.tr('\\', '/')
+					add_folder_to_files(source, source, file.priority)
 				else
-					@installed_files << File.join(@root, file.source)
+					new_file = Skymod::ModFile.new(file.source)
+					new_file.priority = file.priority
+					@installed_files << new_file
 				end
 			end
-			copy_files(@root)
+			copy_files(@data_dir)
 		end
 
 		private

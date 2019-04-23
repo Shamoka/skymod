@@ -3,7 +3,8 @@ module Skymod
 		attr_reader	:type
 		attr_reader	:source
 		attr_reader	:destination
-		attr_reader	:priority
+		attr_accessor	:priority
+		attr_accessor	:base
 
 		def initialize(input)
 			if input.is_a?(String)

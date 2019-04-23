@@ -42,15 +42,13 @@ module Skymod
 		end
 
 		def get_game(gameId)
-			game_sql = @db.execute("SELECT *, rowid
+			 game_sql = @db.execute("SELECT *, rowid
 								   FROM games
 								   WHERE rowid == (?)", gameId).first
 			game = Game.new(game_sql['name'], game_sql['path'], self)
 			game.id = game_sql['rowid']
 			return game
 		end
-
-		private
 
 	end
 end

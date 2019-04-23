@@ -11,9 +11,9 @@ module Skymod
 			return nil
 		end
 
-		def self.find_dir_no_case(base_dir, case_dir)
+		def self.find_no_case(base_dir, case_dir)
 			result = base_dir + "/"
-			case_dir.split('\\').each do |dir|
+			case_dir.split('/').each do |dir|
 				target = Dir.no_case_find(result, dir)
 				if target and File.directory?(target)
 					result << File.basename(target)
