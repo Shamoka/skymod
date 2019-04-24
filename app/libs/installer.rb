@@ -31,6 +31,9 @@ module Skymod
 		def copy_files(dest_dir)
 			@installed_files.each do |file|
 				real_dir = create_directory_hierarchy(dest_dir, file.source)
+				if real_file = Skymod::Dir.no_case_find(real_dir, File.basename(file.source))
+					puts "Conflict"
+				end
 				FileUtils.cp(File.join(@root, file.base, file.source), real_dir)
 				if real_dir == dest_dir
 					real_dir = "."

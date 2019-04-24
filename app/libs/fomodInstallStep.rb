@@ -90,7 +90,7 @@ module Skymod
 						label.buffer.text = @name
 						label.visible = true
 						box.add(label)
-						plugin_list = plugins.print(box, @type)
+						plugins.print(box, @type)
 					end
 				end
 
@@ -105,7 +105,7 @@ module Skymod
 					@order = xml.attributes['order']
 
 					xml.each_element('plugin') do |plugin_iter|
-						@plugin <<  Plugin.new(plugin_iter)
+						@plugin << Plugin.new(plugin_iter)
 					end
 				end
 
@@ -118,6 +118,20 @@ module Skymod
 							plugin.active = true
 							plugin.signal_connect :toggled do |p|
 								p.active = true
+							end
+						end
+					elsif type == "SelectAtLeastOne"
+						build_checkbox(plugin_list)
+						plugin_list.first.active = true
+						plugin_list.each do |plugin|
+							plugin.signal_connect :toggled do |p|
+								count = 0;
+								plugin_list.each do |child|
+									count = count + 1 if child.active?
+								end
+								if count == 0
+									p.active = true
+								end
 							end
 						end
 					elsif type == "SelectAtMostOne" 

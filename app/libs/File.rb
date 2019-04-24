@@ -1,8 +1,8 @@
 module Skymod
 	class ModFile
 		attr_reader	:type
-		attr_reader	:source
 		attr_reader	:destination
+		attr_accessor	:source
 		attr_accessor	:priority
 		attr_accessor	:base
 
