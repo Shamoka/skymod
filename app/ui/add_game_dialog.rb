@@ -26,7 +26,7 @@ module Skymod
 
 			buttonAdd.signal_connect :clicked do |widget|
 				@name = gameName.buffer.text
-				self.response(Gtk::ResponseType::OK) if @path
+				self.response(Gtk::ResponseType::OK) if @path and !name.empty?
 			end
 
 			buttonCancel.signal_connect :clicked do |widget|

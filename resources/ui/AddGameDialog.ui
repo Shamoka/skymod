@@ -90,6 +90,7 @@
                 <property name="width_request">256</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="action">select-folder</property>
                 <property name="title" translatable="yes"/>
               </object>
               <packing>
