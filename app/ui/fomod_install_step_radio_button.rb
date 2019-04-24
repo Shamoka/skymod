@@ -3,11 +3,13 @@ module Skymod
 		type_register
 
 		attr_accessor :files
+		attr_reader :description
 
-		def initialize(files)
+		def initialize(files, description)
 			super()
 
 			@files = files
+			@description = description
 		end
 	end
 end

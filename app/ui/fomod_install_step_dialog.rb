@@ -9,6 +9,7 @@ module Skymod
 				set_template resource: '/org/shamoka/skymod/ui/FomodInstallStepDialog.ui'
 
 				bind_template_child 'fomodInstallStepListBox'
+				bind_template_child 'description'
 				bind_template_child 'okButton'
 				bind_template_child 'cancelButton'
 			end
@@ -21,7 +22,7 @@ module Skymod
 
 			set_title(installStep.name)
 
-			return if installStep.print(fomodInstallStepListBox) == false
+			return if installStep.print(fomodInstallStepListBox, description) == false
 
 			okButton.signal_connect :clicked do |button|
 				fomodInstallStepListBox.children.each do |row|

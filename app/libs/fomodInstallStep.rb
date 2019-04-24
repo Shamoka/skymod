@@ -23,10 +23,11 @@ module Skymod
 				end
 			end
 
-			def print(box)
+			def print(box, description)
+				@description = description
 				return false if checkDependency == false
 				@optional_file_groups.each do |opt|
-					opt.print(box)
+					opt.print(box, description)
 				end
 				return true
 			end
@@ -63,9 +64,9 @@ module Skymod
 					end
 				end
 
-				def print(box)
+				def print(box, description)
 					@groups.each do |group|
-						group.print(box)
+						group.print(box, description)
 					end
 				end
 			end
@@ -84,13 +85,13 @@ module Skymod
 					end
 				end
 
-				def print(box)
+				def print(box, description)
 					@plugins.each do |plugins|
 						label = Gtk::TextView.new
 						label.buffer.text = @name
 						label.visible = true
 						box.add(label)
-						plugins.print(box, @type)
+						plugins.print(box, description, @type)
 					end
 				end
 
@@ -109,7 +110,7 @@ module Skymod
 					end
 				end
 
-				def print(box, type)
+				def print(box, description, type)
 					plugin_list = Array.new
 					button = nil
 					if type == "SelectAll"
@@ -157,6 +158,9 @@ module Skymod
 						plugin_list.sort! { |a, b| b.label <=> a.label }
 					end
 					plugin_list.each do |plugin|
+						plugin.signal_connect 'enter-notify-event' do |p|
+							description.buffer.text = p.description
+						end
 						box.add(create_row(plugin))
 					end
 					sep = Gtk::Separator.new(Gtk::Orientation::HORIZONTAL)
@@ -170,7 +174,7 @@ module Skymod
 				def build_radio(plugin_list)
 					radio_group = nil
 					@plugin.each do |plugin|
-						radio = Skymod::FomodInstallStepRadioButton.new(plugin.files)
+						radio = Skymod::FomodInstallStepRadioButton.new(plugin.files, plugin.description)
 						if not radio_group.nil?
 							radio.group = radio_group
 						end
@@ -183,7 +187,7 @@ module Skymod
 
 				def build_checkbox(plugin_list)
 					@plugin.each do |plugin|
-						plugin_box = Skymod::FomodInstallStepCheckButton.new(plugin.files)
+						plugin_box = Skymod::FomodInstallStepCheckButton.new(plugin.files, plugin.description)
 						plugin_box.label = plugin.name
 						plugin_box.visible = true
 						plugin_list << plugin_box
@@ -207,8 +211,12 @@ module Skymod
 					@name = xml.attributes['name']
 					@flags = Array.new
 					@files = Array.new
+					@description = String.new
 
-					@description = xml.elements['description']
+				 	xml.elements['description'].cdatas.each do |cdata|
+						@description << cdata.value
+						@description << "\n"
+					end
 
 					if (xml.elements['conditionFlags'])
 						xml.elements['conditionFlags'].each_element('flag') do |flag|
