@@ -11,7 +11,12 @@ module Skymod
 				Dir.mkdir(@data_dir)
 			end
 
-			add_folder_to_files("", "", 0)
+			if base_dir = Skymod::Dir.no_case_find(@root, "Data")
+				add_folder_to_files(File.basename(base_dir), File.basename(base_dir), 0)
+			else
+				add_folder_to_files("", "", 0)
+			end
+
 			return true
 		end
 
