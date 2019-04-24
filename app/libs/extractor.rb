@@ -8,8 +8,10 @@ module Skymod
 			@app_root = app_root
 			@filename = filename
 
-			if (/.*\.7z/ =~ filename)
+			if File.extname(filename) == ".7z"
 				@extractor = Extractor7z.new
+			elsif File.extname(filename) == ".zip"
+				@extractor = ExtractorZip.new
 			else
 				raise InvalidFileType
 			end

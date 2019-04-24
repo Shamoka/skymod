@@ -38,11 +38,17 @@ module Skymod
 
 		def check_archives
 			archive_dir = File.join($app_root, "data", "archives", @name)
-			Dir.glob(File.join(archive_dir, "*.7z")).each do |archive_file|
-				mod = Mod.new(archive_file, @db, @id)
-				if not mod.exists?
-					mod.archive.extract
-					mod.save!
+			Dir.entries(archive_dir).each do |archive_file|
+				if archive_file != "." and archive_file != ".."
+					begin
+						mod = Mod.new(File.join(archive_dir, archive_file), @db, @id)
+						if not mod.exists?
+							mod.archive.extract
+							mod.save!
+						end
+					rescue
+						puts archive_file + " : not a valid archive"
+					end
 				end
 			end
 		end

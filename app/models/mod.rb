@@ -44,7 +44,8 @@ module Skymod
 			fomod_dir = Skymod::Dir.no_case_find(@archive.base_extract_dir, "fomod")
 			module_config_xml_path = Skymod::Dir.no_case_find(fomod_dir, "ModuleConfig.xml") if fomod_dir
 			if fomod_dir and module_config_xml_path
-				module_config_xml_path = Skymod::Dir.no_case_find(fomod_dir, "ModuleConfig.xml")
+				module_config_xml = REXML::Document.new(File.new(module_config_xml_path))
+				installer = Skymod::FomodInstaller.new(game, self, @db, module_config_xml)
 			else
 				installer = Skymod::DirectInstaller.new(game, self, @db)
 			end

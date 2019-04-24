@@ -7,7 +7,6 @@ module Skymod
 			@xml = doc.root
 			@name = nil
 			@dependecies = Array.new
-			@required_files = Array.new
 			@install_steps = Array.new
 			@data_dir = nil
 		end
@@ -64,7 +63,7 @@ module Skymod
 		def get_required_files
 			if @xml.elements['requiredInstallFiles']
 				@xml.elements['requiredInstallFiles'].each_element('file|folder') do |e|
-					@required_files << Skymod::Fomod::File.new(e)
+					@files_list << Skymod::ModFile.new(e)
 				end
 			end
 		end
