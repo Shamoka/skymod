@@ -28,6 +28,9 @@ module Skymod
 					dialog.files.each do |file|
 						@files_list << file
 					end
+				else
+					dialog.destroy
+					return false
 				end
 				dialog.destroy
 			end
@@ -41,7 +44,7 @@ module Skymod
 					@installed_files << new_file
 				end
 			end
-			return self
+			return true
 		end
 
 		def run

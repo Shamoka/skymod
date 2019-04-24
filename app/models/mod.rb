@@ -50,9 +50,13 @@ module Skymod
 				installer = Skymod::DirectInstaller.new(game, self, @db)
 			end
 
-			installer.prepare.run
-			@installed = "true"
-			update_installed!
+			if installer.prepare == true
+				installer.run
+				@installed = "true"
+				update_installed!
+				return true
+			end
+			return false
 		end
 
 		def uninstall!

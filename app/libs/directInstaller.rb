@@ -12,7 +12,7 @@ module Skymod
 			end
 
 			add_folder_to_files("", "", 0)
-			return self
+			return true
 		end
 
 		def run

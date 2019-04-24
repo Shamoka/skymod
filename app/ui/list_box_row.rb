@@ -20,7 +20,9 @@ module Skymod
 			modListBoxRowInstall.set_active(mod.installed == "true")
 			modListBoxRowInstall.signal_connect :toggled do |widget|
 				if widget.active?
-					@mod.install!
+					if @mod.install! == false
+						widget.active = false
+					end
 				else
 					@mod.uninstall!
 				end
