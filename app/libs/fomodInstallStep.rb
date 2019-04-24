@@ -202,8 +202,10 @@ module Skymod
 						end
 					end
 
-					xml.elements['files'].elements.each do |file|
-						@files << Skymod::ModFile.new(file)
+					if (xml.elements['files'])
+						xml.elements['files'].elements.each do |file|
+							@files << Skymod::ModFile.new(file)
+						end
 					end
 				end
 			end
