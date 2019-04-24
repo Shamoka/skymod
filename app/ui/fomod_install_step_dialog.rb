@@ -21,7 +21,7 @@ module Skymod
 
 			set_title(installStep.name)
 
-			installStep.print(fomodInstallStepListBox)
+			return if installStep.print(fomodInstallStepListBox) == false
 
 			okButton.signal_connect :clicked do |button|
 				fomodInstallStepListBox.children.each do |row|

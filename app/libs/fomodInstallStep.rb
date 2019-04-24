@@ -2,17 +2,20 @@ module Skymod
 	module Fomod
 		class InstallStep
 			attr_reader	:optional_file_groups
-			attr_reader :visible
 			attr_reader	:name
 
 			def initialize(xml)
 				@optional_file_groups = Array.new
+				@visible = Array.new
+				@flags = Array.new
+				@visible = Array.new
 
 				@name = xml.attributes['name']
 
 				if xml.elements['visible']
-					v = xml.elements['visible'].elements.first
-					@visble = Flag.new(v)
+					xml.elements['visible'].elements do |flag|
+						@visble << FlagDependency.new(flag)
+					end
 				end
 
 				xml.each_element('optionalFileGroups') do |opt|
@@ -21,18 +24,31 @@ module Skymod
 			end
 
 			def print(box)
+				return false if checkDependency == false
 				@optional_file_groups.each do |opt|
 					opt.print(box)
 				end
+				return true
 			end
 
-			class Flag
-				attr_reader	:name
+			def checkDependency
+				@visible.each do |v|
+					@flags.each do |f|
+						if v.flag == f.name and v.value == f.value
+							return false
+						end
+					end
+				end
+				return true
+			end
+
+			class FlagDependency
+				attr_reader :flag
 				attr_reader :value
 
 				def initialize(xml)
-					@name = xml.attributes['name']
-					@value = xml.attributes['value'] || xml.text
+					@flag = xml.attributes['flag']
+					@value = xml.attributes['value']
 				end
 			end
 
@@ -190,8 +206,18 @@ module Skymod
 						@files << Skymod::ModFile.new(file)
 					end
 				end
-
 			end
+
+			class Flag
+				attr_reader	:name
+				attr_accessor :value
+
+				def initialize(xml)
+					@name = xml.attributes['name']
+					@value = xml.attributes['value']
+				end
+			end
+
 		end
 	end
 end
